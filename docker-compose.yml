@@ -1,0 +1,36 @@
+# TYPO3 with MySQL
+#
+# Access via "http://localhost:7080"
+#   (or "http://$(docker-machine ip):7080" if using docker-machine)
+#
+# During initial setup:
+# Database name: db
+# Database username: db
+# Database password: db
+# Database host: db
+
+version: '3'
+
+services:
+
+  typo3:
+    #build: .
+    image: martinhelmich/typo3:8
+    container_name: typo3dev
+    ports:
+      - 7080:80
+    volumes:
+      - ./web/fileadmin:/var/www/html/fileadmin
+      - ./web/typo3conf:/var/www/html/typo3conf
+    depends_on:
+      - mariadb
+    restart: always
+
+  mariadb:
+    build: ./mariadb
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: db
+      MYSQL_USER: db
+      MYSQL_PASSWORD: db
+    restart: always
